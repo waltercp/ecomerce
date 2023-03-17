@@ -21,11 +21,12 @@ function printProducts(db) {
 
     for (const product of db.products) {
         const buttonAdd = product.quantity
-            ? `<i class='bx bx-plus'   id='${product.id}' ></i>
+            ? `<i class='bx bx-plus'></i>
             <span class="product_info--stock">stock: ${product.quantity}</span>`
             : "<span class='product__soldout'>sold out</span>";
+
         html += `
-        <div class="product shirt">
+        <div class="product ${product.category}">
             <div class="product__img">
                 <img src="${product.image}" alt="imagen"/>
             </div>
@@ -116,8 +117,8 @@ function modalProduct(db) {
             const productFind = db.products.find(
                 (product) => product.id === id);
 
-        
-                html += `
+
+            html += `
                 <div class="contentProduct">
                 <i class="bx bxs-x-circle closeModal"></i>
                 <div class="contentProduct__img">
@@ -134,17 +135,17 @@ function modalProduct(db) {
             </div>
             `
         }
-        
+
         bodyHTML.innerHTML = html
         console.log(bodyHTML)
-         const iconMonHTML = document.querySelector(".bxs-x-circle")
+        const iconMonHTML = document.querySelector(".bxs-x-circle")
         iconMonHTML.addEventListener("click", function () {
             bodyHTML.classList.remove("modalProduct__show");
             location.reload();
-    
-    })
 
-    
+        })
+
+
     });
 
 
@@ -343,6 +344,8 @@ function handlePrintAmountProducts(db) {
 }
 
 
+
+
 async function main() {
 
     const db = {
@@ -352,6 +355,16 @@ async function main() {
         cart: JSON.parse(window.localStorage.getItem('cart')) || {},
     };
 
+    const filterSHTML = document.querySelectorAll(".content_filter .filter");
+
+    filterSHTML.forEach((filter) => {
+        filter.addEventListener("click", (e) => {
+            filterSHTML.forEach((filter) =>
+                filter.classList.remove("filter__active mixitup-control-active")
+            );
+            e.target.classList.add("filter__active mixitup-control-active");
+        });
+    });
 
     printProducts(db);
     handleShowCart();
@@ -365,6 +378,17 @@ async function main() {
     printTotal(db);
     handleTotal(db);
     handlePrintAmountProducts(db)
+
+
+
+    mixitup(".products", {
+        selectors: {
+            target: '.product'
+        },
+        animation: {
+            duration: 300,
+        }
+    });
 
 }
 
